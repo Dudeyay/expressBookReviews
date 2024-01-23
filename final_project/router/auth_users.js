@@ -15,14 +15,29 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const username = req.query.username;
+    const password = req.query.password;
+    if (!username || !password) {
+        return res.send("Body empty");
+    } else {
+        let user = users.filter((user)=>{
+            return (user.username===username && user.password===password);
+        })
+        if (user.length > 0) {
+            let accessToken = jwt.sign({data:password},'access',{expiresIn: 60*60});
+            req.session.authorization = {
+                accessToken,username
+            }
+            return res.send("User successfully logged in");
+        } else {
+            return res.status(208).json({message: "Invalid Login. Check username and password"});
+        }
+    }
 });
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    
 });
 
 module.exports.authenticated = regd_users;
