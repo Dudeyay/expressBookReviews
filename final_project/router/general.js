@@ -25,35 +25,56 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
+public_users.get('/', async function (req, res) {
   //Write your code here
-  return res.send(JSON.stringify(books, null,4));
+  let response = await JSON.stringify(books, null,4)
+  return res.send(response);
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn', async function (req, res) {
   //Write your code here
-    return res.send(books[parseInt(req.params.isbn)]);
+  let response = await books[parseInt(req.params.isbn)];
+    return res.send(response);
  });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-    for(let bookID in books) {
-        if (books[bookID].author === req.params.author) {
-            res.send(books[bookID]);
+public_users.get('/author/:author', async function (req, res) {
+    function getBook1() {
+        let found = false;
+        for(let bookID in books) {
+            if (books[bookID].author === req.params.author) {
+                res.send(books[bookID]);
+                found = true;
+            }
+        }   
+    
+    
+    
+        if (!found) {
+            return res.send("Book not found");
         }
     }
-    return res.send("Book not found");
+    await getBook1();
+    
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-    for(let bookID in books) {
-        if (books[bookID].title === req.params.title) {
-            res.send(books[bookID]);
-        }
+public_users.get('/title/:title',async function (req, res) {
+    function getBook2() {
+        let found = false;
+            for(let bookID in books) {
+                if (books[bookID].title === req.params.title) {
+                    res.send(books[bookID]);
+                    found = true;
+                }
+            }
+            if (!found) {
+                return res.send("Book not found");
+            }
     }
-    return res.send("Book not found");
+    await getBook2();
+    
 });
 
 //  Get book review
