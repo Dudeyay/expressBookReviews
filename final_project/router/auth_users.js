@@ -37,7 +37,31 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
+    let isbn = req.params.isbn;
+    let review = req.query.review;
+    let username = req.session.authorization.username;
+
+    if (!books[isbn]) {
+        return res.status(404).json({message: "Book not found"});
+    }
+
+    // Add or update the review
+    books[isbn].reviews[username] = review;
+
+    res.send(username+"! Your review is \""+review+"\"");
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    let username = req.session.authorization.username;
+    let reviews = {};
+    let isbn = req.params.isbn;
     
+    if (books[isbn].reviews.hasKey(username)) {
+        reviews.push(books[isbn].reviews[username])
+        delete books[isbn].reviews[username];
+    }
+    
+    res.send("Reviews deleted. Here are you deleted reviews: "+reviews);
 });
 
 module.exports.authenticated = regd_users;
