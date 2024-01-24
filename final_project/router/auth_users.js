@@ -53,13 +53,13 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
 regd_users.delete("/auth/review/:isbn", (req, res) => {
     let username = req.session.authorization.username;
-    let reviews = {};
-    let isbn = req.params.isbn;
     
-    if (books[isbn].reviews.hasKey(username)) {
-        reviews.push(books[isbn].reviews[username])
-        delete books[isbn].reviews[username];
-    }
+    let isbn = req.params.isbn;
+    let reviews = books[isbn].reviews[username];
+    
+    
+    delete books[isbn].reviews[username];
+    
     
     res.send("Reviews deleted. Here are you deleted reviews: "+reviews);
 });
